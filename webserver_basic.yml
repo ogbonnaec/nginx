@@ -1,0 +1,41 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: installing nginx the latest version
+      apt:
+        name: nginx
+        state: latest
+        update_cache: yes
+
+    - name: starting nginx
+      service:
+        name: nginx
+        state: started
+
+    - ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Creating a directory if it does not exist
+      ansible.builtin.file:
+        path: /var/www/ws.xion.de
+        state: directory
+        mode: '0755'
+
+    - name: Copying the customized welcome page of nginx
+      copy:
+        src: /Users/emmanuelogbonna/Hobby/WW-AS-OS/files/index.html
+        dest: /var/www/ws.xion.de
+        mode: '0644'
+
+    - name: Copying the configuration file of nginx
+      copy:
+        src: /Users/emmanuelogbonna/Hobby/WW-AS-OS/files/web.conf
+        dest: /etc/nginx/conf.d
+        mode: '0644'
+
+    - name: Restarting the nginx services
+      systemd:
+       name: nginx.service
+       state: restarted

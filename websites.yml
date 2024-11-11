@@ -1,0 +1,6 @@
+---
+- name: install a webserver and host website
+  hosts: all
+  become: yes
+  roles:
+    - nginx
